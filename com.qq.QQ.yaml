@@ -77,6 +77,16 @@ modules:
       - type: file
         path: patch/rename.cpp
 
+  - name: llqqnt
+    buildsystem: simple
+    build-commands:
+      - mkdir -p $FLATPAK_DEST/share/loader
+      - cp -r src package.json LICENSE $FLATPAK_DEST/share/loader
+    sources:
+      - type: git
+        url: https://github.com/LiteLoaderQQNT/LiteLoaderQQNT.git
+        commit: 5bf0e63c755afe25556b76d963b2cd342fc07571
+
   - name: fontconfig
     buildsystem: simple
     build-commands:
@@ -95,6 +105,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install apply_extra $FLATPAK_DEST/bin
+      - install -Dm644 llqqnt.js $FLATPAK_DEST/llqqnt.js
       - install -Dm755 qq.sh $FLATPAK_DEST/bin/qq
       - install -Dm644 com.qq.QQ.metainfo.xml -t $FLATPAK_DEST/share/metainfo
       - install -Dm644 com.qq.QQ.png -t $FLATPAK_DEST/share/icons/hicolor/512x512/apps
@@ -105,6 +116,10 @@ modules:
           - export ZYPAK_LD_PRELOAD="/app/etc/preload/rename.so"
           - export TMPDIR="$XDG_RUNTIME_DIR/app/$FLATPAK_ID"
           - WAYLAND_SOCKET=${WAYLAND_DISPLAY:-"wayland-0"}
+          - test -d "$LITELOADERQQNT_APPLICATION" || mkdir -p "$LITELOADERQQNT_PROFILE"
+          - export LITELOADERQQNT_PROFILE=${LITELOADERQQNT_PROFILE:-"$HOME/.var/app/$FLATPAK_ID/config/LiteLoaderQQNT"}
+          - test -d "$LITELOADERQQNT_PROFILE" || mkdir -p "$LITELOADERQQNT_PROFILE/application"
+          - cp -rf "$LITELOADERQQNT_PROFILE/application/"* /var/tmp/application/
           - |
             if [[ -e "$XDG_RUNTIME_DIR/${WAYLAND_SOCKET}" || -e "${WAYLAND_DISPLAY}" ]]
             then
@@ -118,7 +133,16 @@ modules:
           - bsdtar --to-stdout -xf qq.deb data.* | bsdtar -xf -
           - mv opt/QQ .
           - rm -rf qq.deb usr opt data.*
+          - |
+            for file in preloadAux.js  preload.js  preload_login.js  preload_simple.js	preload_webview.js;do
+              ln -sf /var/tmp/application/$file QQ/resources/app/application/$file
+            done
+          - sed -i 's@./application/app_launcher/index.js@./app_launcher/llqqnt.js@g' QQ/resources/app/package.json
+          - install -Dm644 /app/llqqnt.js QQ/resources/app/app_launcher/llqqnt.js
         dest-filename: apply_extra
+
+      - type: file
+        path: llqqnt.js
 
       - type: file
         path: com.qq.QQ.metainfo.xml
