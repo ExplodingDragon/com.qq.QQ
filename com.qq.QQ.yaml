@@ -116,9 +116,10 @@ modules:
           - export ZYPAK_LD_PRELOAD="/app/etc/preload/rename.so"
           - export TMPDIR="$XDG_RUNTIME_DIR/app/$FLATPAK_ID"
           - WAYLAND_SOCKET=${WAYLAND_DISPLAY:-"wayland-0"}
-          - test -d "$LITELOADERQQNT_APPLICATION" || mkdir -p "$LITELOADERQQNT_PROFILE"
+          - test -d "$LITELOADERQQNT_PROFILE" || mkdir -p "$LITELOADERQQNT_PROFILE"
           - export LITELOADERQQNT_PROFILE=${LITELOADERQQNT_PROFILE:-"$HOME/.var/app/$FLATPAK_ID/config/LiteLoaderQQNT"}
           - test -d "$LITELOADERQQNT_PROFILE" || mkdir -p "$LITELOADERQQNT_PROFILE/application"
+          - test -d /var/tmp/application || mkdir -p /var/tmp/application
           - cp -rf "$LITELOADERQQNT_PROFILE/application/"* /var/tmp/application/
           - |
             if [[ -e "$XDG_RUNTIME_DIR/${WAYLAND_SOCKET}" || -e "${WAYLAND_DISPLAY}" ]]
