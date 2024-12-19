@@ -85,7 +85,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/LiteLoaderQQNT/LiteLoaderQQNT.git
-        commit: 5bf0e63c755afe25556b76d963b2cd342fc07571
+        commit: 745e89ccd4469510c3b96fcfb21dd8026629eec8
 
   - name: fontconfig
     buildsystem: simple
@@ -116,11 +116,8 @@ modules:
           - export ZYPAK_LD_PRELOAD="/app/etc/preload/rename.so"
           - export TMPDIR="$XDG_RUNTIME_DIR/app/$FLATPAK_ID"
           - WAYLAND_SOCKET=${WAYLAND_DISPLAY:-"wayland-0"}
-          - test -d "$LITELOADERQQNT_PROFILE" || mkdir -p "$LITELOADERQQNT_PROFILE"
           - export LITELOADERQQNT_PROFILE=${LITELOADERQQNT_PROFILE:-"$HOME/.var/app/$FLATPAK_ID/config/LiteLoaderQQNT"}
-          - test -d "$LITELOADERQQNT_PROFILE" || mkdir -p "$LITELOADERQQNT_PROFILE/application"
-          - test -d /var/tmp/application || mkdir -p /var/tmp/application
-          - cp -rf "$LITELOADERQQNT_PROFILE/application/"* /var/tmp/application/
+          - test -d "$LITELOADERQQNT_PROFILE" || mkdir -p "$LITELOADERQQNT_PROFILE"
           - |
             if [[ -e "$XDG_RUNTIME_DIR/${WAYLAND_SOCKET}" || -e "${WAYLAND_DISPLAY}" ]]
             then
@@ -135,10 +132,7 @@ modules:
           - mv opt/QQ .
           - rm -rf qq.deb usr opt data.*
           - |
-            for file in preloadAux.js  preload.js  preload_login.js  preload_simple.js	preload_webview.js;do
-              ln -sf /var/tmp/application/$file QQ/resources/app/application/$file
-            done
-          - sed -i 's@./application/app_launcher/index.js@./app_launcher/llqqnt.js@g' QQ/resources/app/package.json
+            sed -i -e 's@"main":.*@"main": "./app_launcher/llqqnt.js",@g' QQ/resources/app/package.json
           - install -Dm644 /app/llqqnt.js QQ/resources/app/app_launcher/llqqnt.js
         dest-filename: apply_extra
 
