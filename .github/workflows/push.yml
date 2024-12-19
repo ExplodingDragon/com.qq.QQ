@@ -11,8 +11,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup Envs
         run: |
-          apt install flatpak flatpak-builder appstream-compose -y
-          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          sudo apt update -y
+          sudo apt install flatpak flatpak-builder appstream-compose -y
+          sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
       - name: Build
         run: |
           flatpak-builder --force-clean --user --install-deps-from=flathub --repo=repo --install builddir com.qq.QQ.yaml
