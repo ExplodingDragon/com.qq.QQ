@@ -21,3 +21,15 @@ To opt-out do the same with `--nosocket=wayland`.
 The QQ app itself is **proprietary** (closed source).
 
 This wrapper is not verified by, affiliated with, or supported by Tencent.
+
+
+## Install && Run
+
+```bash
+git clone https://github.com/ExplodingDragon/com.qq.QQ
+cd com.qq.QQ 
+sudo apt install flatpak flatpak-builder appstream-compose -y
+flatpak remote-modify flathub --user --url=https://dl.flathub.org/repo/
+flatpak-builder --force-clean --user --install-deps-from=flathub --repo=repo  builddir com.qq.QQ.yaml
+flatpak run com.qq.QQ
+```
