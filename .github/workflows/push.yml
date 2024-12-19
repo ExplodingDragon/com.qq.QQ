@@ -15,13 +15,6 @@ jobs:
           sudo apt install flatpak flatpak-builder appstream-compose -y
           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-      - name: Build
+      - name: Test
         run: |
-          flatpak-builder --force-clean --user --install-deps-from=flathub --repo=repo --install builddir com.qq.QQ.yaml
-          flatpak build-bundle repo com.qq.QQ.flatpak com.qq.QQ
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-flatpak-qq
-          path: |
-            *.flatpak
+          flatpak-builder --force-clean --user --install-deps-from=flathub --repo=repo builddir com.qq.QQ.yaml
